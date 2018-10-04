@@ -1,0 +1,20 @@
+#!/bin/bash
+
+rootz=$(pwd)
+
+cookbooks_dir="/software/chef_solo/cookbooks/"
+vendored_cookbooks="/software/chef_solo/vendored_cookbooks/"
+
+rm -rvf $vendored_cookbooks/*
+
+cd $cookbooks_dir
+
+for cb in $(ls)
+do
+  cd $cb
+  berks vendor $vendored_cookbooks
+  cd ..
+done
+
+cd $rootz
+sudo chef-solo -c /software/chef_solo/solo.rb -j /software/chef_solo/attributes.json
